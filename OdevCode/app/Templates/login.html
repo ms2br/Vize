@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Flix | Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- GOOGLE FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- BOX ICONS -->
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- LOGIN CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', path='login.css') }}">
+</head>
+<body>
+
+    <div class="login-box">
+
+        <div class="logo">
+            <i class='bx bx-movie-play bx-tada'></i>
+            Fl<span>i</span>x
+        </div>
+
+        <h2>Giriş Yap</h2>
+
+        <form method="POST">
+            <div class="input-box">
+                <input type="text" name="username" placeholder="Kullanıcı Adı" required>
+                <i class='bx bx-user'></i>
+            </div>
+
+            <div class="input-box">
+                <input type="password" name="password" placeholder="Şifre" required>
+                <i class='bx bx-lock-alt'></i>
+            </div>
+
+            <button type="submit" class="login-btn">
+                Giriş Yap
+            </button>
+        </form>
+
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+
+        <div class="extra-links">
+            <p>Hesabın yok mu?
+                <a href="/register">Kayıt Ol</a>
+            </p>
+            <p>
+                <a href="/forgot-password">Şifremi Unuttum</a>
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>

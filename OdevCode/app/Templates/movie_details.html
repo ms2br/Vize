@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie['title'] }} Detayları</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="movie-details">
+            <img src="{{ movie['poster_url'] }}" alt="{{ movie['title'] }}">
+            <h3>{{ movie['title'] }}</h3>
+            <p><strong>Tür: </strong>{{ movie['genres'] }}</p>
+            <p><strong>Açıklama: </strong>{{ movie['overview'] if 'overview' in movie else 'Açıklama mevcut değil.' }}</p>
+            <p><strong>Yıl: </strong>{{ movie['year'] if 'year' in movie else 'Yıl bilgisi yok.' }}</p>
+            <a class="back-btn" href="{{ url_for('dashboard') }}">Ana Sayfaya Dön</a>
+        </div>
+    </div>
+</body>
+</html>

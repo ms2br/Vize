@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Flix | Film Önerileri</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- OWL CAROUSEL -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+
+    <!-- BOX ICONS -->
+    <link href="cc" rel="stylesheet">
+
+    <!-- APP CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', path='grid.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="nav-wrapper">
+    <div class="container">
+        <div class="nav">
+            <a href="#" class="logo">
+                <i class="bx bx-movie-play main-color"></i>
+                Fl<span class="main-color">i</span>x
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Movies</a></li>
+                <li><a href="#">Series</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="{{ url_for('logout') }}" class="logout-btn">Çıkış Yap</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- END NAV -->
+
+<!-- HERO -->
+<div class="hero-section">
+    <div class="hero-slide-item">
+        <img src="{{ recommendations[0]['url'] if recommendations else '' }}" alt="">
+        <div class="overlay"></div>
+
+        <div class="hero-slide-item-content">
+            <div class="item-content-wraper">
+                <div class="item-content-title">
+                    Hoşgeldiniz, Kullanıcı {{ user_id }}
+                </div>
+
+                <div class="item-content-description">
+                    Size özel yapay zekâ destekli film önerileri
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END HERO -->
+
+<!-- RECOMMENDED MOVIES -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            Film Önerileri
+        </div>
+
+        <div class="movies-slide owl-carousel">
+
+            {% for movie in recommendations %}
+            <a href="{% if movie.get('movieId') %}{{ url_for('movie_details', movie_id=movie['movieId']) }}{% else %}#{% endif %}"
+               class="movie-item">
+
+                <img src="{{ movie['url'] }}" alt="{{ movie['title'] }}">
+
+                <div class="movie-item-content">
+                    <div class="movie-item-title">
+                        {{ movie['title'] }}
+                    </div>
+
+                    <div class="movie-infos">
+                        {% if movie.get('movieId') %}
+                            <span>Detaylar</span>
+                        {% else %}
+                            <span>Detay yok</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+<!-- END RECOMMENDED MOVIES -->
+
+<!-- FOOTER -->
+<footer class="section">
+    <div class="container">
+        <p>© 2026 Flix. All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+<script>
+    $(document).ready(() => {
+    $('#hamburger-menu').click(() => {
+        $('#hamburger-menu').toggleClass('active')
+        $('#nav-menu').toggleClass('active')
+    })
+
+    // setting owl carousel
+
+    let navText = ["<i class='bx bx-chevron-left'></i>", "<i class='bx bx-chevron-right'></i>"]
+
+    $('#hero-carousel').owlCarousel({
+        items: 1,
+        dots: false,
+        loop: true,
+        nav:true,
+        navText: navText,
+        autoplay: true,
+        autoplayHoverPause: true
+    })
+
+    $('#top-movies-slide').owlCarousel({
+        items: 2,
+        dots: false,
+        loop: true,
+        autoplay: true,
+        autoplayHoverPause: true,
+        responsive: {
+            500: {
+                items: 3
+            },
+            1280: {
+                items: 4
+            },
+            1600: {
+                items: 6
+            }
+        }
+    })
+
+    $('.movies-slide').owlCarousel({
+        items: 2,
+        dots: false,
+        nav:true,
+        navText: navText,
+        margin: 15,
+        responsive: {
+            500: {
+                items: 2
+            },
+            1280: {
+                items: 4
+            },
+            1600: {
+                items: 6
+            }
+        }
+    })
+})
+</script>
+
+</body>
+</html>
