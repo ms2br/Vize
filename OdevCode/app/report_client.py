@@ -1,22 +1,42 @@
 import requests
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 
 API_URL = "http://127.0.0.1:5001/report/top_recommended_movies"
 
-def get_top_movies(limit=10):
-    try:
-        response = requests.get(f"{API_URL}?limit={limit}")
-        response.raise_for_status()
-        data = response.json()
+app = FastAPI()
+app.mount("/static", StaticFiles(directory="Style"), name="static")
+templates = Jinja2Templates(directory="Templates")
 
-        if "error" in data:
-            print("Hata:", data["error"])
-            return
 
-        print(f"En çok önerilen {limit} film:")
-        for idx, movie in enumerate(data, start=1):
-            print(f"{idx}. {movie['title']} - {movie['count']} kez önerildi")
-    except requests.exceptions.RequestException as e:
-        print("API çağrısında hata oluştu:", e)
+def fetch_movies(limit=3):
+    r = requests.get(API_URL, params={"limit": limit}, timeout=5)
+    r.raise_for_status()
+    return r.json()
 
-if __name__ == "__main__":
-    get_top_movies(limit=5)
+
+@app.get("/admin", response_class=HTMLResponse)
+@app.get("/admin/", response_class=HTMLResponse)
+def admin_dashboard(request: Request):
+    movies = fetch_movies(limit=3)
+
+    total_recommendations = sum(m["count"] for m in movies)
+    avg_imdb = round(
+        sum(m["imdb"] for m in movies) / len(movies),
+        1
+    )
+
+    top_movie = movies[0]["title"]
+
+    return templates.TemplateResponse(
+        "admin_dashboard.html",
+        {
+            "request": request,
+            "movies": movies,
+            "total": total_recommendations,
+            "avg_imdb": avg_imdb,
+            "top_movie": top_movie
+        }
+    )

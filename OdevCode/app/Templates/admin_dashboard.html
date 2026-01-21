@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flix Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* GENEL */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #141414;
+            color: #fff;
+            margin: 0;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            padding: 2rem;
+            font-size: 2rem;
+            color: #e50914;
+            font-weight: bold;
+        }
+
+        /* KPI CONTAINER */
+        .kpi-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 2rem;
+        }
+
+        .kpi-card, .graph-card {
+            background: #1f1f1f;
+            border-radius: 50%;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(229, 9, 20, 0.5);
+        }
+
+        .kpi-card h2 {
+            margin: 1rem 0;
+            font-size: 1.5rem;
+            color: #e50914;
+        }
+
+        .kpi-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .kpi-card li {
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        canvas {
+            max-width: 250px !important;
+            max-height: 250px !important;
+        }
+
+        /* MOVIE GRID */
+        .movie-list {
+            margin-top: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .movie-item {
+            background: #1f1f1f;
+            border-radius: 10px;
+            padding: 0.5rem;
+            width: 150px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(229, 9, 20, 0.3);
+        }
+
+        .movie-item img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .movie-item-title {
+            margin-top: 0.5rem;
+            font-weight: bold;
+        }
+
+        .movie-item span {
+            display: block;
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 700px){
+            .kpi-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-header">🎬 Flix Admin Dashboard</div>
+
+<!-- KPI Circles -->
+<div class="kpi-container">
+    <!-- En Çok Önerilen Filmler -->
+    <div class="kpi-card">
+        <h2>🔥 En Çok Önerilen Filmler</h2>
+        <ul>
+            {% for movie in movies %}
+            <li>{{ movie.title }} - {{ movie.count }} öneri ⭐{{ movie.imdb }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Öneri Analizi -->
+    <div class="graph-card">
+        <canvas id="recommendChart"></canvas>
+    </div>
+</div>
+
+<!-- MOVIES GRID -->
+<div class="movie-list">
+    {% for movie in movies %}
+    <div class="movie-item">
+        <img src="/static/images/default.jpg" alt="Movie Poster">
+        <div class="movie-item-title">{{ movie.title }}</div>
+        <span>📊 {{ movie.count }} öneri</span>
+        <span>⭐ IMDb: {{ movie.imdb }}</span>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+const labels = [{% for m in movies %}"{{ m.title }}",{% endfor %}];
+const data = [{% for m in movies %}{{ m.count }},{% endfor %}];
+
+new Chart(document.getElementById("recommendChart"), {
+    type: "doughnut",
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "Recommendations",
+            data: data,
+            backgroundColor: [
+                "#e50914", "#ff4500", "#ffa500", "#ffd700", "#32cd32",
+                "#00ced1", "#1e90ff", "#9370db", "#ff69b4", "#a52a2a"
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    color: '#fff'
+                }
+            }
+        }
+    }
+});
+</script>
+
+</body>
+</html>

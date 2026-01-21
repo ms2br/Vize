@@ -58,8 +58,22 @@ def logout(request: Request):
     return RedirectResponse("/", status_code=302)
 
 
+
 @app.get("/report/top_recommended_movies")
-def report_top_movies(limit: int = 10):
-    top_movies = movies.sort_values(by='counter', ascending=False).head(limit)
-    result = [{"title": row["title"], "count": int(row["counter"])} for _, row in top_movies.iterrows()]
+def report_top_movies(limit: int = 3):
+    top_movies = (
+        movies
+        .sort_values(by="counter", ascending=False)
+        .head(limit)
+    )
+
+    result = [
+        {
+            "title": row["title"],
+            "count": int(row["counter"]),
+            "imdb": float(row["imdb"])
+        }
+        for _, row in top_movies.iterrows()
+    ]
+
     return JSONResponse(result)
